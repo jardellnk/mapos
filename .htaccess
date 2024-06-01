@@ -1,0 +1,15 @@
+RewriteEngine On
+RewriteBase /mapos/
+
+# Exceção para /index.php/api/v1
+RewriteCond %{REQUEST_URI} ^/index\.php/api/v1 [NC]
+RewriteRule ^ - [L]
+
+# Redirecionar todas as URLs que contêm /index.php/ para URLs sem esse trecho
+RewriteCond %{THE_REQUEST} \s/index\.php/([^\s?]+) [NC]
+RewriteRule ^ %1 [L,R=301]
+
+# Roteamento interno para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]

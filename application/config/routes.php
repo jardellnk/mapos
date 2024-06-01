@@ -42,7 +42,8 @@ if (! defined('BASEPATH')) {
 |
 */
 
-$route['default_controller'] = 'mapos';
+$route['default_controller'] = 'home';
+$route['mapos'] = 'mapos';
 $route['404_override'] = '';
 
 // Rotas da API

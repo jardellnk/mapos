@@ -1,0 +1,137 @@
+Antes de instalar o Maostore e fazer qualquer modificação, é crucial realizar um backup. Não posso me responsabilizar por conflitos que possam surgir durante o processo.
+
+Inicie configurando o emitente e o sistema. Se a logo não estiver atualizada, isso pode resultar em erros. Recomenda-se editar as informações do emitente antes de prosseguir com os scripts, já que não há um campo designado no Mapos para inserir esses detalhes.
+
+Após a configuração inicial, é necessário atualizar as tabelas do MySQL utilizando o script fornecido.
+
+É importante notar que, por padrão, os produtos não serão exibidos na vitrine. Para autorizar sua exibição, é necessário modificar a coluna "exibir" do produto desejado. Quando o valor for igual a 0, os produtos estarão ocultos. Para exibi-los, altere o valor para 1.
+
+Certifique-se de seguir essas etapas com atenção para garantir uma instalação adequada e evitar possíveis problemas futuros.
+
+MAOSTORE OBRIGATORIO ------------->
+
+ALTER TABLE `produtos` 
+ADD `img` VARCHAR(255) NOT NULL DEFAULT 'produtos.jpg', 
+ADD `especificacao` VARCHAR(255), 
+ADD `exibir` int(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `emitente` 
+ADD `whatsapp` VARCHAR(15) NOT NULL DEFAULT '41999999999', 
+ADD `facebook` VARCHAR(50) NOT NULL DEFAULT 'www.facebook.com', 
+ADD `instagram` VARCHAR(50) NOT NULL DEFAULT 'www.instagram.com';
+
+OPCIONAL -------->
+
+ALTER TABLE `os` 
+ADD `serial` VARCHAR(20); 
+
+NAO ESTA INCLUSO NO SISTEMA FUNCOES EXTRA 
+usado para consulta de equipamentos e sua garantia
+
+
+CREATE TABLE `rma` (
+  `id_rma` int(11) NOT NULL,
+  `nome` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `telefone` varchar(20) DEFAULT NULL,
+  `data_criacao` timestamp NOT NULL DEFAULT current_timestamp()
+)
+
+
+CREATE TABLE `equipamentos_rma` (
+  `id_equipamento` int(11) NOT NULL,
+  `id_rma` int(11) DEFAULT NULL,
+  `numero_serie` varchar(50) DEFAULT NULL,
+  `numero_nfe` varchar(50) DEFAULT NULL,
+  `numero_empenho` varchar(50) DEFAULT NULL,
+  `descricao_defeito` text DEFAULT NULL
+)
+
+ALTER TABLE `rma`
+  ADD PRIMARY KEY (`id_rma`);
+
+
+ALTER TABLE `equipamentos_rma`
+  ADD PRIMARY KEY (`id_equipamento`),
+  ADD KEY `id_rma` (`id_rma`);
+
+
+AREA EM CONSTRUÇÃO ----- > 
+
+CREATE TABLE `compras` (
+  `idCompras` int(11) NOT NULL,
+  `dataCompra` date DEFAULT NULL,
+  `valorTotal` decimal(10,2) DEFAULT 0.00,
+  `desconto` decimal(10,2) DEFAULT 0.00,
+  `valor_desconto` decimal(10,2) DEFAULT 0.00,
+  `faturado` tinyint(1) DEFAULT NULL,
+  `observacoes` text DEFAULT NULL,
+  `observacoes_cliente` text DEFAULT NULL,
+  `clientes_id` int(11) NOT NULL,
+  `usuarios_id` int(11) DEFAULT NULL,
+  `lancamentos_id` int(11) DEFAULT NULL,
+  `SKU` text NOT NULL
+) 
+
+CREATE TABLE `itens_de_compras` (
+  `idItens` int(11) NOT NULL,
+  `subTotal` decimal(10,2) DEFAULT 0.00,
+  `quantidade` int(11) DEFAULT NULL,
+  `preco` decimal(10,2) DEFAULT 0.00,
+  `compras_id` int(11) NOT NULL,
+  `produtos_id` int(11) NOT NULL,
+  `sku` text NOT NULL
+) 
+
+ALTER TABLE `itens_de_compras`
+  ADD PRIMARY KEY (`idItens`);
+
+ALTER TABLE `compras`
+  ADD PRIMARY KEY (`idCompras`);
+
+
+CONFIGURAÇOES EXTRA ------>
+para mudar a pagina principal
+
+editar o config.php 
+\mapos\application\config\config.php
+
+$config['csrf_exclude_uris'] = ['api.*+'];
+$config['csrf_exclude_uris'] = ['api.*+','home.*+'];
+
+editar o router 
+\mapos\application\config\routes.php
+
+$route['default_controller'] = 'mapos';
+$route['404_override'] = '';
+
+$route['default_controller'] = 'home';
+$route['mapos'] = 'mapos';
+$route['404_override'] = '';
+
+EXTRA DEIXANDO URL AMIGAVEL 
+
+crie um arquivo na pasta raiz do mapos
+.htaccess
+
+RewriteEngine On
+RewriteBase /mapos/ <----- nome da pasta onde contem os arquivos do mapos -- caso esteja em hospedagem web e o mapos esteja na raiz ou em subdominio so deixar "/" uma barra
+
+# Exceção para /index.php/api/v1
+RewriteCond %{REQUEST_URI} ^/index\.php/api/v1 [NC]
+RewriteRule ^ - [L]
+
+# Redirecionar todas as URLs que contêm /index.php/ para URLs sem esse trecho
+RewriteCond %{THE_REQUEST} \s/index\.php/([^\s?]+) [NC]
+RewriteRule ^ %1 [L,R=301]
+
+# Roteamento interno para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+
+edite o config.php
+
+$config['index_page'] = 'index.php';
+$config['index_page'] = '';
