@@ -40,6 +40,7 @@
                 <tr>
                     <th>Cod.</th>
                     <th>Cod. Barra</th>
+                    <th>Imagem</th>
                     <th>Nome</th>
                     <th>Estoque</th>
                     <th>Preço</th>
@@ -58,6 +59,7 @@
                     echo '<tr>';
                     echo '<td>' . $r->idProdutos . '</td>';
                     echo '<td>' . $r->codDeBarra . '</td>';
+                    echo '<td> <img src="'.base_url()  . $r->img . '"  height="80" width="80"></td>'; 
                     echo '<td>' . $r->descricao . '</td>';
                     echo '<td>' . $r->estoque . '</td>';
                     echo '<td>' . number_format($r->precoVenda, 2, ',', '.') . '</td>';

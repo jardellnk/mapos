@@ -25,6 +25,7 @@
         text-indent: 0;
     }
 </style>
+
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
         <div class="widget-box">
@@ -34,9 +35,14 @@
                 </span>
                 <h5>Editar Produto</h5>
             </div>
+            <div class="widget-content">
+            <div class="span3" style="padding: 1%; margin-left: 0">  
+            <img src=<?php echo base_url() .  $result->img ?> alt="Imagem Ilustrativa"  height="500" width="500" >
+            </div>
             <div class="widget-content nopadding tab-content">
+            
                 <?php echo $custom_error; ?>
-                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal">
+                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal" enctype="multipart/form-data">
                     <div class="control-group">
                         <?php echo form_hidden('idProdutos', $result->idProdutos) ?>
                         <label for="codDeBarra" class="control-label">Código de Barra<span class=""></span></label>
@@ -99,6 +105,35 @@
                         <label for="estoqueMinimo" class="control-label">Estoque Mínimo</label>
                         <div class="controls">
                             <input id="estoqueMinimo" type="text" name="estoqueMinimo" value="<?php echo $result->estoqueMinimo; ?>" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="especificacao" class="control-label">Especificacao</label>
+                        <div class="controls">
+                        <textarea class="span6 editor" name="especificacao" id="especificacao" cols="30" rows="5"><?php echo $result->especificacao ?></textarea>
+                            <!-- <input id="especificacao" type="text" name="especificacao" value="<?php echo $result->especificacao; ?>" /> -->
+                        </div>
+                    </div>
+
+                  
+                    <div class="control-group">
+                        <label for="novaImagem" class="control-label">Nova Imagem</label>
+                        <div class="controls">
+                            <input type="file" name="novaImagem" />
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="exibir" class="control-label">Exibir no site</label>
+                        <div class="controls">
+                            <select id="exibir" name="exibir" style="width: 15em;">
+                                <option <?php if ($result->exibir == '0') 
+                                    { echo 'selected'; } ?> value="0">Não
+                                </option>
+                                <option <?php if ($result->exibir == '1') 
+                                    { echo 'selected'; } ?> value="1">Sim
+                                </option>
+                            </select>
                         </div>
                     </div>
 

@@ -109,25 +109,49 @@ class Produtos extends MY_Controller
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(',', '', $precoCompra);
             $precoVenda = $this->input->post('precoVenda');
-            $precoVenda = str_replace(',', '', $precoVenda);
-            $data = [
-                'codDeBarra' => set_value('codDeBarra'),
-                'descricao' => $this->input->post('descricao'),
-                'unidade' => $this->input->post('unidade'),
-                'precoCompra' => $precoCompra,
-                'precoVenda' => $precoVenda,
-                'estoque' => $this->input->post('estoque'),
-                'estoqueMinimo' => $this->input->post('estoqueMinimo'),
-                'saida' => set_value('saida'),
-                'entrada' => set_value('entrada'),
-            ];
-
+            $precoVenda = str_replace(',', '', $precoVenda);// Configuração do upload
+            $config['upload_path'] = 'assets/img/produtos/';
+            $config['allowed_types'] = 'gif|jpg|jpeg|png';
+            $config['max_size'] = 2048;
+    
+            $this->load->library('upload', $config);
+    
+            // Verifique se uma nova imagem foi enviada
+            if (!empty($_FILES['novaImagem']['name'])) {
+                if (!$this->upload->do_upload('novaImagem')) {
+                    // Se o upload falhar, exiba mensagens de erro
+                    $error = array('error' => $this->upload->display_errors());
+                    $this->data['custom_error'] .= '<div class="form_error"><p>' . $error['error'] . '</p></div>';
+                } else {
+                    // Se o upload for bem-sucedido, continue com o processamento dos dados
+                    $upload_data = $this->upload->data();
+                    $data['img'] = 'assets/img/produtos/' . $upload_data['file_name'];
+    
+                    // Remova a imagem existente, se houver
+                    if (!empty($this->input->post('removerImagemAtual')) && !empty($this->input->post('imgAtual'))) {
+                        unlink($this->input->post('imgAtual'));
+                    }
+                }
+            }
+    
+            $data['codDeBarra'] = set_value('codDeBarra');
+            $data['descricao'] = $this->input->post('descricao');
+            $data['unidade'] = $this->input->post('unidade');
+            $data['precoCompra'] = $precoCompra;
+            $data['precoVenda'] = $precoVenda;
+            $data['estoque'] = $this->input->post('estoque');
+            $data['estoqueMinimo'] = $this->input->post('estoqueMinimo');
+            $data['saida'] = set_value('saida');
+            $data['entrada'] = set_value('entrada');
+            $data['especificacao'] = $this->input->post('especificacao');
+            $data['exibir'] = $this->input->post('exibir');
+    
             if ($this->produtos_model->edit('produtos', $data, 'idProdutos', $this->input->post('idProdutos')) == true) {
                 $this->session->set_flashdata('success', 'Produto editado com sucesso!');
                 log_info('Alterou um produto. ID: ' . $this->input->post('idProdutos'));
                 redirect(site_url('produtos/editar/') . $this->input->post('idProdutos'));
             } else {
-                $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured</p></div>';
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro ao editar o produto.</p></div>';
             }
         }
 
