@@ -35,7 +35,7 @@
         ?>
       </h1>
       <h2 class="h-two"> Ao Sistema de Controle de Ordens de Serviço</h2>
-      <img src="<?php echo base_url() ?>assets/img/dashboard-animate.svg" class="left-login-image" alt="Map-OS - Versão: <?= $this->config->item('app_version'); ?>">
+      <img src="<?php echo base_url() ?>assets/img/dashboard-animate.svg" class="left-login-image" alt="Ma-OStore - Versão: <?= $this->config->item('app_version'); ?>">
     </div>
     <form class="form-vertical" id="formLogin" method="post" action="<?= site_url('login/verificarLogin') ?>">
       <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
@@ -72,8 +72,8 @@
                 <div class="center">
                   <button id="btn-acessar">Acessar</button>
                 </div>
-                <div class="links-uteis"><a href="https://github.com/RamonSilva20/mapos">
-                    <p><?= date('Y'); ?> &copy; Ramon Silva</p>
+                <div class="links-uteis"><a href="https://github.com/jardellnk">
+                    <p><?= date('Y'); ?> &copy; ma-OStore</p>
                   </a>
                 </div>
                 <a href="#notification" id="call-modal" role="button" class="btn" data-toggle="modal" style="display: none ">notification</a>
@@ -107,6 +107,10 @@
       </div>
     </form>
   </div>
+  <div class="links-uteis">
+  <p>Créditos a <a href="https://github.com/RamonSilva20/mapos" target="_blank" rel="noopener noreferrer"><?= date('Y'); ?> &copy; Ramon Silva</a></p>
+</div>
+
 
   <script src="<?= base_url() ?>assets/js/jquery-1.12.4.min.js"></script>
   <script src="<?= base_url() ?>assets/js/bootstrap.min.js"></script>
